@@ -27,6 +27,8 @@ let additionButton = document.querySelector(".addition-button");
 
 function clear(){
     currentExp.textContent = "";
+    num1 = null;
+    num2 = null;
 
 }
 
@@ -35,19 +37,28 @@ function typeNum(event){
 }
 
 function enterOperation(event){
-    if (!firstNumEntered){
-        num1 = Number(currentExp.textContent);
-        firstNumEntered = true;
+
+    if (currentExp.textContent !== ""){
+        
         operation = event.target.textContent;
-    }
-    else if(!secondNumEntered){
-        numPart = currentExp.textContent.split(operation)[1];
-        num2 = Number(numPart);
-        secondNumEntered = true;
-        let result = evaluate(operation, num1, num2);
-        currentExp.textContent = result;
-        operation = event.target.textContent;
-        currentExp.textContentd += operation;
+        currentExp.textContent += operation;
+    
+        numPart1 = currentExp.textContent.split(operation)[0];
+        num1 = Number(numPart1);
+        numPart2 = currentExp.textContent.split(operation)[1];
+        if (numPart2 !== ""){
+            num2 = Number(numPart2);
+            let result = calculate(operation, num1, num2);
+            currentExp.textContent = result;
+            operation = event.target.textContent;
+            currentExp.textContent += operation;
+        }
+        
+        
+        
+        
+        
+        
 
 
 
@@ -55,10 +66,13 @@ function enterOperation(event){
 
 }
 
-function evaluate(operation, num1, num2){
+function calculate(operation, num1){
+    
+
     if (operation === "+"){
         return num1 + num2;
     }
+    
 
 }
 
