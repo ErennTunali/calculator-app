@@ -2,10 +2,10 @@ let num1;
 let num2;
 let operation;
 
-let firstNumEntered = false;
-let secondNumEntered = false;
 let operationEntered = false;
 let prevOperation;
+
+let errorOccured = false;
 
 
 
@@ -27,6 +27,8 @@ let subtractionButton = document.querySelector(".subtraction-button");
 let multButton = document.querySelector(".mult-button");
 let divisionButton = document.querySelector(".division-button");
 
+let equalsButton = document.querySelector(".equals-button");
+
 
 
 function clear(){
@@ -34,10 +36,14 @@ function clear(){
     num1 = null;
     num2 = null;
     operationEntered = false;
+    operation = null;
+    prevOperation = null;
+    errorOccured = false;
 
 }
 
 function typeNum(event){
+    if (errorOccured){return;}
     currentExp.textContent += event.target.textContent;
 }
 
@@ -55,6 +61,8 @@ function lastIsOperation(string){
 
 
 function enterOperation(event){
+
+    if (errorOccured){return;}
 
     if (currentExp.textContent !== ""){
 
@@ -111,9 +119,37 @@ function calculate(operation, num1, num2){
         return num1 * num2;
     }
     else if (operation === "/"){
-        return num1 / num2;
+
+        if(num2 === 0){
+            errorOccured = true;
+            return "0 divison error";
+        }
+        else{
+            return (num1 / num2).toFixed(3);
+        }
+        
     }
     
+
+}
+
+
+function equals(event){
+    if (errorOccured){return;}
+    if(lastIsOperation(currentExp.textContent) || !operationEntered){
+        return;
+    }
+    else{
+        let parts = currentExp.textContent.split(prevOperation)
+        num1 = Number(parts[0]);
+        num2 = Number(parts[1]);
+        let result = calculate(prevOperation, num1, num2);
+        currentExp.textContent = result;
+        operationEntered = false
+
+    }
+
+
 
 }
 
@@ -137,3 +173,5 @@ additionButton.addEventListener("click", enterOperation);
 subtractionButton.addEventListener("click", enterOperation);
 multButton.addEventListener("click", enterOperation);
 divisionButton.addEventListener("click", enterOperation);
+
+equalsButton.addEventListener("click", equals);
