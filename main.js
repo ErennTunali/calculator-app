@@ -5,6 +5,7 @@ let operation;
 let firstNumEntered = false;
 let secondNumEntered = false;
 let operationEntered = false;
+let prevOperation;
 
 
 
@@ -22,6 +23,9 @@ let nineButton = document.querySelector(".nine-button");
 let zeroButton = document.querySelector(".zero-button");
 
 let additionButton = document.querySelector(".addition-button");
+let subtractionButton = document.querySelector(".subtraction-button");
+let multButton = document.querySelector(".mult-button");
+let divisionButton = document.querySelector(".division-button");
 
 
 
@@ -29,6 +33,7 @@ function clear(){
     currentExp.textContent = "";
     num1 = null;
     num2 = null;
+    operationEntered = false;
 
 }
 
@@ -36,23 +41,49 @@ function typeNum(event){
     currentExp.textContent += event.target.textContent;
 }
 
+function lastIsOperation(string){
+    let endings = ["+" ,"-", "x" ,"/"];
+    for (let ending of endings){
+        if (string.endsWith(ending)){
+            return true;
+        }
+    }
+    return false;
+
+
+}
+
+
 function enterOperation(event){
 
     if (currentExp.textContent !== ""){
-        
+
         operation = event.target.textContent;
-        currentExp.textContent += operation;
-    
-        numPart1 = currentExp.textContent.split(operation)[0];
-        num1 = Number(numPart1);
-        numPart2 = currentExp.textContent.split(operation)[1];
-        if (numPart2 !== ""){
-            num2 = Number(numPart2);
-            let result = calculate(operation, num1, num2);
-            currentExp.textContent = result;
-            operation = event.target.textContent;
+
+        if (!operationEntered){
             currentExp.textContent += operation;
+            operationEntered = true;
         }
+        else{
+            if (lastIsOperation(currentExp.textContent)){
+                currentExp.textContent = currentExp.textContent.slice(0, -1) + operation;
+                /* prevOperation = operation; */
+            }
+            else{
+
+            
+                let parts = currentExp.textContent.split(prevOperation)
+                num1 = Number(parts[0]);
+                num2 = Number(parts[1]);
+                let result = calculate(prevOperation, num1, num2);
+                currentExp.textContent = result + operation;
+            }
+
+        }
+        prevOperation = operation;
+        
+       
+
         
         
         
@@ -64,13 +95,23 @@ function enterOperation(event){
 
     }
 
+
 }
 
-function calculate(operation, num1){
+function calculate(operation, num1, num2){
     
 
     if (operation === "+"){
         return num1 + num2;
+    }
+    else if (operation === "-"){
+        return num1 - num2;
+    }
+    else if (operation === "x"){
+        return num1 * num2;
+    }
+    else if (operation === "/"){
+        return num1 / num2;
     }
     
 
@@ -93,3 +134,6 @@ nineButton.addEventListener("click", typeNum)
 zeroButton.addEventListener("click", typeNum)
 
 additionButton.addEventListener("click", enterOperation);
+subtractionButton.addEventListener("click", enterOperation);
+multButton.addEventListener("click", enterOperation);
+divisionButton.addEventListener("click", enterOperation);
